@@ -1,10 +1,7 @@
-namespace SeleniumRecipes;
-
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-// Replace the version to match the Chrome version
-using OpenQA.Selenium.DevTools.V115.Emulation;
-using OpenQA.Selenium.DevTools.V115.Security;
+
+namespace SeleniumRecipes;
 
 [TestClass]
 public class Ch24DevToolsSecurityTest
@@ -25,14 +22,13 @@ public class Ch24DevToolsSecurityTest
 
         IDevTools devTools = driver as IDevTools;
         DevToolsSession devToolsSession = devTools.GetDevToolsSession();
-        SetIgnoreCertificateErrorsCommandSettings securitySettings = new SetIgnoreCertificateErrorsCommandSettings();
+        var securitySettings = new Security.SetIgnoreCertificateErrorsCommandSettings();
         securitySettings.Ignore = true;
-        var domains = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains = devToolsSession.GetVersionSpecificDomains<Domains>();
         domains.Security.Enable();
         domains.Security.SetIgnoreCertificateErrors(securitySettings);
         driver.Navigate().GoToUrl("https://expired.badssl.com");
         System.Threading.Thread.Sleep(1000);
         Assert.IsFalse(driver.FindElement(By.TagName("body")).Text.Contains("Your connection is not private"));
     }
-
 }

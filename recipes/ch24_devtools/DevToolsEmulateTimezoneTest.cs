@@ -1,9 +1,7 @@
-namespace SeleniumRecipes;
-
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-// Replace the version to match the Chrome version
-using OpenQA.Selenium.DevTools.V115.Emulation;
+
+namespace SeleniumRecipes;
 
 [TestClass]
 public class Ch24DevToolsEmulateTimezoneTest
@@ -20,15 +18,13 @@ public class Ch24DevToolsEmulateTimezoneTest
     public void TestEmulateTimezone() {
         IDevTools devTools = driver as IDevTools;
         DevToolsSession devToolsSession = devTools.GetDevToolsSession();
-        var timezoneSettings = new SetTimezoneOverrideCommandSettings();
+        var timezoneSettings = new Emulation.SetTimezoneOverrideCommandSettings();
         timezoneSettings.TimezoneId = "Asia/Tokyo";
-        var domains = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains = devToolsSession.GetVersionSpecificDomains<Domains>();
         domains.Emulation.SetTimezoneOverride(timezoneSettings);
         driver.Navigate().GoToUrl("https://whatismytimezone.com");
         System.Threading.Thread.Sleep(1000);
         Assert.IsTrue(driver.FindElement(By.TagName("body")).Text.Contains("Japan Standard Time"));
 
     }
-
-
 }

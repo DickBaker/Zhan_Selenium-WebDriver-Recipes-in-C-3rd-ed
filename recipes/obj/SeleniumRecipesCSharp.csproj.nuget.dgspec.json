@@ -1,25 +1,36 @@
 {
   "format": 1,
   "restore": {
-    "/Users/zhimin/work/books/selenium-webdriver-recipes-in-csharp-3ed/recipes/SeleniumRecipesCSharp.csproj": {}
+    "F:\\Dev\\Zhan_Selenium-WebDriver-Recipes-in-C-3rd-ed\\recipes\\SeleniumRecipesCSharp.csproj": {}
   },
   "projects": {
-    "/Users/zhimin/work/books/selenium-webdriver-recipes-in-csharp-3ed/recipes/SeleniumRecipesCSharp.csproj": {
+    "F:\\Dev\\Zhan_Selenium-WebDriver-Recipes-in-C-3rd-ed\\recipes\\SeleniumRecipesCSharp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/Users/zhimin/work/books/selenium-webdriver-recipes-in-csharp-3ed/recipes/SeleniumRecipesCSharp.csproj",
+        "projectUniqueName": "F:\\Dev\\Zhan_Selenium-WebDriver-Recipes-in-C-3rd-ed\\recipes\\SeleniumRecipesCSharp.csproj",
         "projectName": "SeleniumRecipesCSharp",
-        "projectPath": "/Users/zhimin/work/books/selenium-webdriver-recipes-in-csharp-3ed/recipes/SeleniumRecipesCSharp.csproj",
-        "packagesPath": "/Users/zhimin/.nuget/packages/",
-        "outputPath": "/Users/zhimin/work/books/selenium-webdriver-recipes-in-csharp-3ed/recipes/obj/",
+        "projectPath": "F:\\Dev\\Zhan_Selenium-WebDriver-Recipes-in-C-3rd-ed\\recipes\\SeleniumRecipesCSharp.csproj",
+        "packagesPath": "C:\\Users\\DickB\\.nuget\\packages\\",
+        "outputPath": "F:\\Dev\\Zhan_Selenium-WebDriver-Recipes-in-C-3rd-ed\\recipes\\obj\\",
         "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages",
+          "C:\\Program Files (x86)\\Syncfusion\\Essential Studio\\WPF\\22.1.34\\ToolboxNuGetPackages",
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
         "configFilePaths": [
-          "/Users/zhimin/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\DickB\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Syncfusion Toolbox for WPF.config"
         ],
         "originalTargetFrameworks": [
           "net7.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files (x86)\\Syncfusion\\Essential Studio\\WinUI\\22.1.34\\NuGetPackages": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,6 +43,11 @@
           "warnAsError": [
             "NU1605"
           ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -64,11 +80,11 @@
             },
             "Selenium.Support": {
               "target": "Package",
-              "version": "[4.8.2, )"
+              "version": "[4.19.0, )"
             },
             "Selenium.WebDriver": {
               "target": "Package",
-              "version": "[4.11.0, )"
+              "version": "[4.19.0, )"
             },
             "System.Data.SQLite": {
               "target": "Package",
@@ -99,7 +115,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/local/share/dotnet/sdk/7.0.202/RuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.200-preview.23624.5\\RuntimeIdentifierGraph.json"
         }
       }
     }

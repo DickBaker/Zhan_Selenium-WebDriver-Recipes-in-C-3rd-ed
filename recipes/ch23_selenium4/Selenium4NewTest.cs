@@ -29,7 +29,7 @@ public class Ch23Selenium4NewTest
         System.Threading.Thread.Sleep(1000);
         WebElement elem = (WebElement)  driver.FindElement(By.Id("details"));
         Screenshot screenshot =  elem.GetScreenshot();
-        screenshot.SaveAsFile("/tmp/coupon.png", ScreenshotImageFormat.Png);
+        screenshot.SaveAsFile("/tmp/coupon.png");
     }
 
     [TestMethod]

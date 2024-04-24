@@ -1,5 +1,6 @@
 namespace HelloSeleniumTest;
 using OpenQA.Selenium.Chrome;
+using SeleniumRecipes;
 
 [TestClass]
 public class Ch23SeleniumChromeForBrowserTest
@@ -14,8 +15,8 @@ public class Ch23SeleniumChromeForBrowserTest
 
     [TestMethod]
     public void TestChromeForTesting() {
-        ChromeOptions options = new ChromeOptions();
-        options.BrowserVersion = "116";
+        ChromeOptions options = new ChromeOptions
+            { BrowserVersion = TestHelper.ChromeBrowserVersion };
         IWebDriver driver = new ChromeDriver(options);
 
         driver.Navigate().GoToUrl("http://www.google.com");

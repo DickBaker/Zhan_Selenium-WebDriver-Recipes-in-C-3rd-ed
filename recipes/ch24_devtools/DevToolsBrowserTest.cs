@@ -1,10 +1,7 @@
-namespace SeleniumRecipes;
-
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-// Replace the version to match the Chrome version
-using OpenQA.Selenium.DevTools.V115.Emulation;
-using OpenQA.Selenium.DevTools.V115.Browser;
+
+namespace SeleniumRecipes;
 
 [TestClass]
 public class Ch24DevToolsBrowserTest
@@ -22,7 +19,7 @@ public class Ch24DevToolsBrowserTest
       
         IDevTools devTools = driver as IDevTools;
         DevToolsSession devToolsSession = devTools.GetDevToolsSession();
-        var domains = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains = devToolsSession.GetVersionSpecificDomains<Domains>();
         domains.Browser.Crash();
         System.Console.WriteLine("Still can reach here, browser is gone");
     }

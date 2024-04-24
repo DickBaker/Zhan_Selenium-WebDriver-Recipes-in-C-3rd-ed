@@ -73,7 +73,7 @@ namespace SeleniumRecipes
             } else {
                 imageFilePath = TestHelper.TempDir() +  "/screenshot.png";
             }
-            ss.SaveAsFile(imageFilePath, ScreenshotImageFormat.Png);        
+            ss.SaveAsFile(imageFilePath);        
         }
 
         [TestMethod]
@@ -88,7 +88,7 @@ namespace SeleniumRecipes
             } else {
                 imageFilePath = TestHelper.TempDir() + "/Exception-" + timestamp + ".png";
             }
-            screenshot.SaveAsFile(imageFilePath, ScreenshotImageFormat.Png);
+            screenshot.SaveAsFile(imageFilePath);
         }
 
         [TestCleanup]

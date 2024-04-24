@@ -29,7 +29,7 @@ namespace SeleniumRecipes {
             System.Threading.Thread.Sleep(500); // load JS
             WebElement svg_parent_elem = (WebElement) driver.FindElement(By.TagName("svg"));
             Screenshot screenshot =  svg_parent_elem.GetScreenshot();
-            screenshot.SaveAsFile("/tmp/svg.png", ScreenshotImageFormat.Png); 
+            screenshot.SaveAsFile("/tmp/svg.png"); 
             Assert.IsTrue(File.Exists("/tmp/svg.png"));
         }
 

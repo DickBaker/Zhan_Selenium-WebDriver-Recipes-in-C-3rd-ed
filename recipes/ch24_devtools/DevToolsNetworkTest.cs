@@ -1,10 +1,8 @@
-namespace SeleniumRecipes;
-
 using System.Diagnostics;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-// Replace the version to match the Chrome version
-using Network = OpenQA.Selenium.DevTools.V115.Network;
+
+namespace SeleniumRecipes;
 
 [TestClass]
 public class Ch24DevToolsNetworkTest
@@ -30,7 +28,7 @@ public class Ch24DevToolsNetworkTest
 
    [TestMethod]
     public void TestNetworkInterception() {
-        var domains = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains = devToolsSession.GetVersionSpecificDomains<Domains>();
         domains.Network.Enable(new Network.EnableCommandSettings());
         domains.Network.SetBlockedURLs(new Network.SetBlockedURLsCommandSettings()
         {
@@ -53,7 +51,7 @@ public class Ch24DevToolsNetworkTest
         long timing1 =  sw1.ElapsedMilliseconds;
         Console.WriteLine("Normal operation: " + timing1 + " (ns)");
 
-        var domains = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains = devToolsSession.GetVersionSpecificDomains<Domains>();
         var networkSettings = new Network.EmulateNetworkConditionsCommandSettings();
         networkSettings.Latency = 3000;
         domains.Network.EmulateNetworkConditions(networkSettings);
@@ -71,6 +69,5 @@ public class Ch24DevToolsNetworkTest
 }
 
 // research and remove later
-// var cookieSettings = new OpenQA.Selenium.DevTools.V115.Network.ClearBrowserCookiesCommandSettings();
+//var cookieSettings = new Network.ClearBrowserCookiesCommandSettings();
 // some references :https://stackoverflow.com/questions/76653578/how-to-clear-chrome-site-data-using-devtools-selenium-webdriver-4-c
-

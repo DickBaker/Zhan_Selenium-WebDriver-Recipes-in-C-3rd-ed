@@ -1,10 +1,7 @@
-namespace SeleniumRecipes;
-
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-// Replace the version to match the Chrome version
-using OpenQA.Selenium.DevTools.V115.Emulation;
-using OpenQA.Selenium.DevTools.V115.Page;
+
+namespace SeleniumRecipes;
 
 [TestClass]
 public class Ch24DevToolsPageTest
@@ -22,7 +19,7 @@ public class Ch24DevToolsPageTest
         IDevTools devTools = driver as IDevTools;
         DevToolsSession devToolsSession = devTools.GetDevToolsSession();
         System.Threading.Thread.Sleep(1000);
-        var domains  = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains  = devToolsSession.GetVersionSpecificDomains<Domains>();
 //        domains.Page.Enable();
   //      domains.Page.Navigate("https://whenwise.agileway.net");
     //    domains.Console.ClearMessages();
@@ -33,12 +30,11 @@ public class Ch24DevToolsPageTest
     public void TestPrintPDF() {
         IDevTools devTools = driver as IDevTools;
         DevToolsSession devToolsSession = devTools.GetDevToolsSession();
-        PrintToPDFCommandSettings printPdfSettings = new PrintToPDFCommandSettings();
         driver.Navigate().GoToUrl("https://whenwise.agileway.net");
         System.Threading.Thread.Sleep(1000);
-        var domains  = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains  = devToolsSession.GetVersionSpecificDomains<Domains>();
         // TODO: how to get data out
+        var printPdfSettings = new Page.PrintToPDFCommandSettings();
         domains.Page.PrintToPDF(printPdfSettings);
     }
-
 }

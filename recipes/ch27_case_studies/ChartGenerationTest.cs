@@ -49,7 +49,7 @@ namespace SeleniumRecipes {
             WebElement svg_elem = (WebElement) driver.FindElement(By.TagName("svg"));
             Screenshot screenshot = svg_elem.GetScreenshot();
 
-            screenshot.SaveAsFile(savedChartFilePath, ScreenshotImageFormat.Png); 
+            screenshot.SaveAsFile(savedChartFilePath); 
             Assert.IsTrue(File.Exists(savedChartFilePath));
 
             // Add nuget System.Drawing.Common

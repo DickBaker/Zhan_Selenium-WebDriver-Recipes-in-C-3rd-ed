@@ -1,9 +1,7 @@
-namespace SeleniumRecipes;
-
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-// Replace the version to match the Chrome version
-using OpenQA.Selenium.DevTools.V115.Emulation;
+
+namespace SeleniumRecipes;
 
 [TestClass]
 public class Ch24DevToolsEmulateLocaleTest
@@ -24,13 +22,12 @@ public class Ch24DevToolsEmulateLocaleTest
 
         IDevTools devTools = driver as IDevTools;
         DevToolsSession devToolsSession = devTools.GetDevToolsSession();
-        SetLocaleOverrideCommandSettings localeSettings = new SetLocaleOverrideCommandSettings();
+        var localeSettings = new Emulation.SetLocaleOverrideCommandSettings();
         localeSettings.Locale = "ja_JP";
-        var domains = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains = devToolsSession.GetVersionSpecificDomains<Domains>();
         domains.Emulation.SetLocaleOverride(localeSettings);
         driver.Navigate().GoToUrl("https://www.localeplanet.com/support/browser.html");
         System.Threading.Thread.Sleep(21000);
         Assert.IsTrue(driver.FindElement(By.TagName("body")).Text.Contains("オーストラリア東部標準時"));
     }
-
 }

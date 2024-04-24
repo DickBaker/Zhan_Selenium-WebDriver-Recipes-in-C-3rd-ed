@@ -1,9 +1,7 @@
-namespace SeleniumRecipes;
-
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.DevTools;
-// Replace the version to match the Chrome version
-using OpenQA.Selenium.DevTools.V115.Emulation;
+
+namespace SeleniumRecipes;
 
 [TestClass]
 public class Ch24DevToolsEmulateGeoTest
@@ -21,15 +19,16 @@ public class Ch24DevToolsEmulateGeoTest
         IDevTools devTools = driver as IDevTools;
 
         DevToolsSession devToolsSession = devTools.GetDevToolsSession();
-        var geoLocationOverrideCommandSettings = new SetGeolocationOverrideCommandSettings();
-
-        // set to Sydney Opera House
-        geoLocationOverrideCommandSettings.Latitude = -33.856159;
-        geoLocationOverrideCommandSettings.Longitude = 151.215256;
-        geoLocationOverrideCommandSettings.Accuracy = 1;
+        var geoLocationOverrideCommandSettings = new Emulation.SetGeolocationOverrideCommandSettings
+        {
+            // set to Sydney Opera House
+            Latitude = -33.856159,
+            Longitude = 151.215256,
+            Accuracy = 1
+        };
 
         // note the version in class 
-        var domains = devToolsSession.GetVersionSpecificDomains<OpenQA.Selenium.DevTools.V115.DevToolsSessionDomains>();
+        var domains = devToolsSession.GetVersionSpecificDomains<Domains>();
         domains.Emulation.SetGeolocationOverride(geoLocationOverrideCommandSettings);
         driver.Navigate().GoToUrl("https://my-location.org/");
         System.Threading.Thread.Sleep(4500);

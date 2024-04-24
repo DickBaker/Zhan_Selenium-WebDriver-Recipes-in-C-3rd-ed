@@ -30,7 +30,7 @@ namespace SeleniumRecipes {
           
             Screenshot ss = ((ITakesScreenshot)driver).GetScreenshot();
             var imageFilePath = TestHelper.TempDir() +  "step_1.png";
-            ss.SaveAsFile(imageFilePath, ScreenshotImageFormat.Png);  
+            ss.SaveAsFile(imageFilePath);  
 
             driver.FindElement(By.Id("biz_name")).SendKeys("Wise Business");
             var dropdown_xpath = "//select[@name='biz[business_type]']/../..";
@@ -38,12 +38,12 @@ namespace SeleniumRecipes {
             System.Threading.Thread.Sleep(250);
             WebElement elemBizTypeList = (WebElement) driver.FindElement(By.XPath(dropdown_xpath + "/ul"));
             ss = elemBizTypeList.GetScreenshot();
-            ss.SaveAsFile(TestHelper.TempDir() + "step_2.png", ScreenshotImageFormat.Png);  
+            ss.SaveAsFile(TestHelper.TempDir() + "step_2.png");  
 
             driver.FindElement(By.XPath(dropdown_xpath + "/ul/li/span[text()='Driving Instructors']")).Click();
             WebElement elemCreateBtn = (WebElement) driver.FindElement(By.Id("create-account"));
             ss = elemCreateBtn.GetScreenshot();
-            ss.SaveAsFile(TestHelper.TempDir() + "step_3.png", ScreenshotImageFormat.Png);  
+            ss.SaveAsFile(TestHelper.TempDir() + "step_3.png");  
 
             List<string> guideList = new List<string>();
             guideList.Add("## Guide: Business Sign up");

@@ -27,11 +27,11 @@ namespace SeleniumRecipes {
 
     
         static bool IsBrokenLink(string url) {
-            HttpWebRequest request = (HttpWebRequest) HttpWebRequest.Create(url);
+            var request = WebRequest.CreateHttp(url);
             request.AllowAutoRedirect = true;
 
             try {
-                HttpWebResponse response = (HttpWebResponse) request.GetResponse();
+                var response = (HttpWebResponse)request.GetResponse();
                 if (response.StatusCode == HttpStatusCode.OK)  {
                     response.Close(); 
                     return false;
@@ -91,5 +91,4 @@ namespace SeleniumRecipes {
             driver.Quit();
         }
     }
-
 }
