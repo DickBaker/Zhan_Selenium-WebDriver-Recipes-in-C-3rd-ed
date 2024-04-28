@@ -1,72 +1,60 @@
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenQA.Selenium;
-using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Chrome;
-using System.Collections.ObjectModel;
-using System.Text;
-using System.IO;
 using System.Data.SQLite;
+using OpenQA.Selenium.Chrome;
 
-namespace SeleniumRecipes
+namespace SeleniumRecipesCSharp.ch15_testdata;
+
+[TestClass]
+public class Ch15QueryDatabaseTest
 {
-    [TestClass]
-    public class Ch15QueryDatabaseTest
+    static readonly WebDriver driver = new ChromeDriver();
+
+    [TestMethod]
+    public void TestDatabaseSqlite3()
     {
-        static IWebDriver driver = new ChromeDriver();
+        driver.Navigate().GoToUrl(TestHelper.SiteUrl() + "/text_field.html");
 
-        [TestMethod]
-        public void TestDatabaseSqlite3()
+        string? oldestUserLogin = null;
+        SQLiteConnection? connection = null;
+
+        try
         {
-            driver.Navigate().GoToUrl(TestHelper.SiteUrl() +  "/text_field.html");
+            // copy the test data from testdata/folder to output folder
+            // String sourceFile =  Path.Combine(TestHelper.ScriptDir() + @"..\testdata\sample.db");
 
-            String oldestUserLogin = null;
-            SQLiteConnection connection = null;
+            string dbFile = Path.Combine(Environment.CurrentDirectory, "sample.db");
+            Console.WriteLine("Using database: " + dbFile);
+            connection = new SQLiteConnection("Data Source=" + dbFile + ";Version=3");
+            connection.Open();
 
+            const string sql = "select login from users order by age desc";
+            SQLiteCommand command = new(sql, connection);
+
+            SQLiteDataReader reader = command.ExecuteReader();
+            while (reader.Read())
+            {    // read the result set
+                oldestUserLogin = (string)reader["login"];
+                Console.WriteLine("Old Login: " + oldestUserLogin);
+                break;
+            }
+        }
+        catch (Exception e)
+        {
+            // probably means no database file is found
+            Console.WriteLine(e.Message);
+        }
+        finally
+        {
             try
             {
-                // copy the test data from testdata/folder to output folder
-                // String sourceFile =  Path.Combine(TestHelper.ScriptDir() + @"..\testdata\sample.db");
-
-                String dbFile = Path.Combine(Environment.CurrentDirectory, "sample.db");
-                Console.WriteLine("Using database: " + dbFile);
-                connection = new SQLiteConnection("Data Source=" + dbFile + ";Version=3");
-                connection.Open();
-
-                String sql = "select login from users order by age desc";
-                SQLiteCommand command = new SQLiteCommand(sql, connection);
-
-                SQLiteDataReader reader = command.ExecuteReader();
-                while (reader.Read())
-                {    // read the result set
-                    oldestUserLogin = (String)reader["login"];
-                    System.Console.WriteLine("Old Login: " + oldestUserLogin);
-                    break;
-                }
+                connection?.Close();
             }
             catch (Exception e)
-            {
-                // probably means no database file is found
-                Console.WriteLine(e.Message);
+            {  // connection close failed.
+                Console.WriteLine(e);
             }
-            finally
-            {
-                try
-                {
-                    if (connection != null)
-                    {
-                        connection.Close();
-                    }
-                }
-                catch (Exception e)
-                {  // connection close failed.
-                    Console.WriteLine(e);
-                }
-            }
-
-            Console.WriteLine(" => " + oldestUserLogin);
-            driver.FindElement(By.Id("user")).SendKeys(oldestUserLogin);
         }
+
+        Console.WriteLine(" => " + oldestUserLogin);
+        driver.FindElement(By.Id("user")).SendKeys(oldestUserLogin);
     }
 }

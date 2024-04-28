@@ -1,25 +1,21 @@
-namespace SeleniumRecipes;
 using OpenQA.Selenium.Chrome;
 
-
+namespace SeleniumRecipesCSharp.ch23_selenium4;
 [TestClass]
 public class Ch23RegisterBasicAuthTest
 {
-    static WebDriver driver;
+    static WebDriver driver = default!;
 
     [ClassCleanup]
-    public static void AfterAll() {
-      if (driver != null)
-        driver.Quit();
-    }
+    public static void AfterAll() => driver?.Quit();
 
     // Doc: https://www.selenium.dev/documentation/webdriver/bidirectional/bidi_api/#register-basic-auth
     [TestMethod]
-    public async Task TestRegisterBasicAuth() {
-        ChromeOptions options = new ChromeOptions();
-        driver = new ChromeDriver(options);
+    public async Task TestRegisterBasicAuth()
+    {
+        driver = new ChromeDriver();
 
-        NetworkAuthenticationHandler handler = new NetworkAuthenticationHandler()
+        NetworkAuthenticationHandler handler = new()
         {
             UriMatcher = (d) => d.Host.Contains("zhimin.com"),
             Credentials = new PasswordCredentials("agileway", "SUPPORTWISE15")
@@ -32,5 +28,4 @@ public class Ch23RegisterBasicAuthTest
         driver.Navigate().GoToUrl("http://zhimin.com/books/bought-learn-ruby-programming-by-examples");
         driver.FindElement(By.LinkText("Download"));
     }
-
 }

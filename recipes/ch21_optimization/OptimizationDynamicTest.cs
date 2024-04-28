@@ -1,230 +1,159 @@
-﻿
-using System;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using OpenQA.Selenium;
+﻿using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Firefox;
-using OpenQA.Selenium.IE;
-using OpenQA.Selenium.Chrome;
-using System.Collections.ObjectModel;
-using System.IO;
-using System.Collections.Generic;
-using OpenQA.Selenium.Remote;
-using OpenQA.Selenium.Interactions;
 
-namespace SeleniumRecipes
+namespace SeleniumRecipesCSharp.ch21_optimization;
+
+[TestClass]
+public class Ch21OptimizationDynamicTest
 {
+    static WebDriver driver = default!;
+    static string siteRootUrl = "https://wisephysio.agileway.net"; // en
+                                                                   // static String siteRootUrl = "https://books.agileway.net"; // cn
 
-    [TestClass]
-    public class Ch21OptimizationDynamicTest
+    static readonly Dictionary<string, string> natalieUserDict = new()
+  {
+          { "english", "natalie" },
+          { "chinese", "tuo" },
+          { "french", "dupont" }
+      };
+
+    static readonly Dictionary<string, string> markUserDict = new()
+  {
+          { "english", "mark" },
+          { "chinese", "li" },
+          { "french", "marc" }
+      };
+
+    [TestMethod]
+    public void TestUseEnvironmentVariableToChangeTestBehaviourDynamically()
     {
+        // Warning: Visual Studio Caching Environment Variables
 
-        static IWebDriver driver;
-        static String siteRootUrl = "https://wisephysio.agileway.net"; // en
-        // static String siteRootUrl = "https://books.agileway.net"; // cn
+        string? browserTypeSetInEnv = Environment.GetEnvironmentVariable("BROWSER");
+        Console.WriteLine(browserTypeSetInEnv);
+        driver = !string.IsNullOrEmpty(browserTypeSetInEnv) && browserTypeSetInEnv.Equals("Firefox")
+          ? new FirefoxDriver() : new ChromeDriver();
 
-        private static readonly Dictionary<string, string> natalieUserDict = new Dictionary<string, string> {
-            { "english", "natalie" },
-            { "chinese", "tuo" },
-            { "french", "dupont" }
-        };
-
-        private static readonly Dictionary<string, string> markUserDict = new Dictionary<string, string> {
-            { "english", "mark" },
-            { "chinese", "li" },
-            { "french", "marc" }
-        };
-
-        [ClassInitialize]
-        public static void BeforeAll(TestContext context)
+        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("SITE_URL")))
         {
+            siteRootUrl = Environment.GetEnvironmentVariable("SITE_URL")!;
         }
+        driver.Navigate().GoToUrl(siteRootUrl);
+    }
 
-        [TestInitialize]
-        public void Before()
+    [TestMethod]
+    public void TestMultiLangWithDifferentTestUserAccounts()
+    {
+        if (!string.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("BASE_URL")))
         {
+            siteRootUrl = Environment.GetEnvironmentVariable("BASE_URL")!;
         }
+        driver = new ChromeDriver();
+        driver.Navigate().GoToUrl(siteRootUrl + "/admin");
 
-        [TestCleanup]
-        public void After()
+        driver.FindElement(By.Id("sign_in_email")).SendKeys(IsChinese() ? "tuo" : "natalie");
+        driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
+        driver.FindElement(By.Id("sign_in_btn")).Click();
+        Assert.IsTrue(driver.PageSource.Contains(IsChinese() ? "不正确的用户名或密码" : "Invalid login or password"));
+    }
+
+    [TestMethod]
+    public void TestTwoLanguagesUsingIfElse()
+    {
+        driver = new ChromeDriver();
+        driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
+
+        if (siteRootUrl.Contains("wisephysio"))
         {
-            driver.Quit();
-        }
-
-        [ClassCleanup]
-        public static void AfterAll()
-        {
-        }
-
-        [TestMethod]
-        public void TestUseEnvironmentVariableToChangeTestBehaviourDynamically()
-        {
-            // Warning: Visual Studio Caching Environment Variables
-
-            String browserTypeSetInEnv = Environment.GetEnvironmentVariable("BROWSER");
-            Console.WriteLine(browserTypeSetInEnv);
-            if (!String.IsNullOrEmpty(browserTypeSetInEnv) && browserTypeSetInEnv.Equals("Firefox"))
-            {
-                driver = new FirefoxDriver();
-            }
-            else
-            {
-                driver = new ChromeDriver();
-            }
-
-            if (!String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("SITE_URL")))
-            {
-                siteRootUrl = Environment.GetEnvironmentVariable("SITE_URL");
-            }
-            driver.Navigate().GoToUrl(siteRootUrl);
-        }
-
-
-        [TestMethod]
-        public void TestMultiLangWithDifferentTestUserAccounts()
-        {
-            if (!String.IsNullOrWhiteSpace(Environment.GetEnvironmentVariable("BASE_URL")))
-            {
-                siteRootUrl = Environment.GetEnvironmentVariable("BASE_URL");
-            }
-            driver = new ChromeDriver();
-            driver.Navigate().GoToUrl(siteRootUrl + "/admin");
-
-            driver.FindElement(By.Id("sign_in_email")).SendKeys(IsChinese() ? "tuo" : "natalie");
+            driver.FindElement(By.Id("sign_in_email")).SendKeys("natalie");
             driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
             driver.FindElement(By.Id("sign_in_btn")).Click();
-            Assert.IsTrue(driver.PageSource.Contains(IsChinese() ? "不正确的用户名或密码" : "Invalid login or password"));                            
+            Assert.IsTrue(driver.PageSource.Contains("Invalid login or password"));
         }
-
-        [TestMethod]
-        public void TestTwoLanguagesUsingIfElse()
+        else if (siteRootUrl.Contains("books"))
         {
-            driver = new ChromeDriver();
-            driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
-
-            if (siteRootUrl.Contains("wisephysio"))
-            {
-                driver.FindElement(By.Id("sign_in_email")).SendKeys( "natalie");
-                driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
-                driver.FindElement(By.Id("sign_in_btn")).Click();
-                Assert.IsTrue(driver.PageSource.Contains("Invalid login or password"));
-            }
-            else if (siteRootUrl.Contains("books"))
-            {
-                 driver.FindElement(By.Id("sign_in_email")).SendKeys( "tuo");
-                driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
-                driver.FindElement(By.Id("sign_in_btn")).Click();
-                Assert.IsTrue(driver.PageSource.Contains("不正确的用户名或密码"));
-            }
-
-        }
-
-
-        public bool IsChinese()
-        {
-            return siteRootUrl.Contains("books");
-        }
-
-        [TestMethod]
-        public void TestTwoLanguagesUsingTernaryOperator()
-        {
-            driver = new ChromeDriver();
-            driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
-
-            driver.FindElement(By.Id("sign_in_email")).SendKeys(IsChinese() ? "tuo" : "natalie");
+            driver.FindElement(By.Id("sign_in_email")).SendKeys("tuo");
             driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
             driver.FindElement(By.Id("sign_in_btn")).Click();
-            System.Threading.Thread.Sleep(1000);
-            Assert.IsTrue(driver.PageSource.Contains(IsChinese() ? "不正确的用户名或密码": "Invalid login or password"));
+            Assert.IsTrue(driver.PageSource.Contains("不正确的用户名或密码"));
         }
+    }
 
-        public string SiteLang()
+    public static bool IsChinese() => siteRootUrl.Contains("books");
+
+    [TestMethod]
+    public void TestTwoLanguagesUsingTernaryOperator()
+    {
+        driver = new ChromeDriver();
+        driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
+
+        driver.FindElement(By.Id("sign_in_email")).SendKeys(IsChinese() ? "tuo" : "natalie");
+        driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
+        driver.FindElement(By.Id("sign_in_btn")).Click();
+        Thread.Sleep(1000);
+        Assert.IsTrue(driver.PageSource.Contains(IsChinese() ? "不正确的用户名或密码" : "Invalid login or password"));
+    }
+
+    public static string SiteLang() => siteRootUrl.Contains("books")
+        ? "chinese"
+        : siteRootUrl.Contains("sandbox")
+          ? "french"
+          : "english";
+
+    [TestMethod]
+    public void TestMultipleLanguagesUsingIfElse()
+    {
+        driver = new ChromeDriver();
+        driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
+
+        if (SiteLang() == "chinese")
         {
-            if (siteRootUrl.Contains("books"))
-            {
-                return "chinese";
-            } else if (siteRootUrl.Contains("sandbox"))
-            {
-                return "french";
-            } else
-            {
-                return "english";
-            }
+            driver.FindElement(By.Id("sign_in_email")).SendKeys("yake@biz.com");
         }
-
-
-        [TestMethod]
-        public void TestMultipleLanguagesUsingIfElse()
+        else if (SiteLang() == "french")
         {
-            driver = new ChromeDriver();
-            driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
-
-            if (SiteLang() == "chinese")
-            {
-                driver.FindElement(By.Id("sign_in_email")).SendKeys("yake@biz.com");
-            }
-            else if (SiteLang() == "french")
-            {
-                driver.FindElement(By.Id("sign_in_email")).SendKeys("dupont");
-            }
-            else { // default
-                driver.FindElement(By.Id("sign_in_email")).SendKeys("yoga@biz.com");
-            }
-            driver.FindElement(By.Id("sign_in_password")).SendKeys("test01");
-            driver.FindElement(By.Id("sign_in_btn")).Click();
+            driver.FindElement(By.Id("sign_in_email")).SendKeys("dupont");
         }
-
-        public String UserLookup(string username)
-        {
-            switch (SiteLang())
-            {
-                case "chinese":
-                    return "tuo";
-                  
-                case "french":
-                    return "dupont";
-
-                default:
-                    return username;
-            }
+        else
+        { // default
+            driver.FindElement(By.Id("sign_in_email")).SendKeys("yoga@biz.com");
         }
+        driver.FindElement(By.Id("sign_in_password")).SendKeys("test01");
+        driver.FindElement(By.Id("sign_in_btn")).Click();
+    }
 
-        [TestMethod]
-        public void TestMultipleLanguagesUsingLookup()
-        {
-            driver = new ChromeDriver();
-            driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
+    public static string UserLookup(string username) => SiteLang() switch
+    {
+        "chinese" => "tuo",
+        "french" => "dupont",
+        _ => username
+    };
 
-            driver.FindElement(By.Id("sign_in_email")).SendKeys(UserLookup("natalie"));
-            driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
-            driver.FindElement(By.Id("sign_in_btn")).Click();
-        }
+    [TestMethod]
+    public void TestMultipleLanguagesUsingLookup()
+    {
+        driver = new ChromeDriver();
+        driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
 
+        driver.FindElement(By.Id("sign_in_email")).SendKeys(UserLookup("natalie"));
+        driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
+        driver.FindElement(By.Id("sign_in_btn")).Click();
+    }
 
-        public String UserLookupDict(string username)
-        {
-            switch (username)
-            {
-                case "natalie":
-                    return natalieUserDict[SiteLang()];
+    public static string UserLookupDict(string username) => username switch
+    {
+        "natalie" => natalieUserDict[SiteLang()],
+        "mark" => markUserDict[SiteLang()],
+        _ => username
+    };
 
-                case "mark":
-                    return markUserDict[SiteLang()];
-
-                default:
-                    return username;
-            }
-        }
-
-        [TestMethod]
-        public void TestMultipleLanguagesUsingHashLookup()
-        {
-            driver = new ChromeDriver();
-            driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
-            driver.FindElement(By.Id("sign_in_email")).SendKeys(UserLookupDict("natalie"));
-            driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
-            driver.FindElement(By.Id("sign_in_btn")).Click();
-        }
-
-
+    [TestMethod]
+    public void TestMultipleLanguagesUsingHashLookup()
+    {
+        driver = new ChromeDriver();
+        driver.Navigate().GoToUrl(siteRootUrl + "/admin"); // may be dynamically set
+        driver.FindElement(By.Id("sign_in_email")).SendKeys(UserLookupDict("natalie"));
+        driver.FindElement(By.Id("sign_in_password")).SendKeys("test");
+        driver.FindElement(By.Id("sign_in_btn")).Click();
     }
 }

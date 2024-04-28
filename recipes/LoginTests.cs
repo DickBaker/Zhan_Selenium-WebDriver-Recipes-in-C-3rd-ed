@@ -1,36 +1,27 @@
-namespace HelloSeleniumTest;
 using OpenQA.Selenium.Chrome;
 
+namespace SeleniumRecipesCSharp;
 [TestClass]
 public class SeleniumLoginTests
 {
-    static IWebDriver driver;
+    static WebDriver driver = default!;
 
-        /// <summary>
-        ///Initialize() is called once during test execution before
-        ///test methods in this test class are executed.
-        ///</summary>
-
+    /// <summary>
+    ///Initialize() is called once during test execution before
+    ///test methods in this test class are executed.
+    ///</summary>
     [ClassInitialize]
-    public static void BeforeAll(TestContext context)
-    {
-        driver =  new ChromeDriver();
-    }
-      
-    [TestInitialize]
-    public void Before()
-    {
-        driver.Navigate().GoToUrl("http://travel.agileway.net");
-    }
+    public static void BeforeAll(TestContext context) => driver = new ChromeDriver();
 
+    [TestInitialize]
+    public void Before() =>
+        driver.Navigate().GoToUrl("http://travel.agileway.net");
 
     [ClassCleanup]
-    public static void AfterAll() {
-        driver.Quit();
-    }
+    public static void AfterAll() => driver.Quit();
 
     [TestMethod]
-    public void TestLoginOK() 
+    public void TestLoginOK()
     {
         driver.FindElement(By.Name("username")).SendKeys("agileway");
         driver.FindElement(By.Name("password")).SendKeys("testwise");
@@ -39,9 +30,8 @@ public class SeleniumLoginTests
         driver.FindElement(By.LinkText("Sign off")).Click();
     }
 
-
     [TestMethod]
-    public void TestLoginFailed() 
+    public void TestLoginFailed()
     {
         driver.FindElement(By.Name("username")).SendKeys("agileway");
         driver.FindElement(By.Name("password")).SendKeys("badpass");

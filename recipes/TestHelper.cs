@@ -1,39 +1,19 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+namespace SeleniumRecipesCSharp;
 
-namespace SeleniumRecipes
+public static class TestHelper
 {
-    public class TestHelper
-    {
+    public static string SiteUrl() =>
+        // change to your installed location for the book site (http://zhimin.com/books/selenium-recipes-csharp)
+        OperatingSystem.IsWindows()
+              ? "file:///C:/work/books/SeleniumRecipes-C%23/site"
+              : "file:///Users/zhimin/work/books/SeleniumRecipes-C%23/site";
 
-        public static String SiteUrl() {
-            // change to your installed location for the book site (http://zhimin.com/books/selenium-recipes-csharp)
-            if (OperatingSystem.IsWindows()) {
-                return "file:///C:/work/books/SeleniumRecipes-C%23/site";
-            } else {
-                return "file:///Users/zhimin/work/books/SeleniumRecipes-C%23/site";
-            }
-        }
+    // change to yours
+    public static string ScriptDir() =>
+        // return @"C:\agileway\books\SeleniumRecipes-C#\recipes"; // Windows
+        // return "/Users/zhimin/work/books/selenium-webdriver-recipes-in-csharp-3ed/recipes"; // macOS/Linux
+        Environment.CurrentDirectory + "/../../..";
 
-        // change to yours
-        public static String ScriptDir()
-        {
-            // return @"C:\agileway\books\SeleniumRecipes-C#\recipes"; // Windows
-            // return "/Users/zhimin/work/books/selenium-webdriver-recipes-in-csharp-3ed/recipes"; // macOS/Linux
-            return Environment.CurrentDirectory + "/../../..";
-        }
-
-        public static String TempDir()
-        {     
-           if (OperatingSystem.IsWindows()) {
-             return @"C:\temp\";
-           } else {
-             return "/tmp/";
-           }
-        }
-
-    }
+    public static string TempDir() => OperatingSystem.IsWindows()
+        ? @"C:\temp\" : "/tmp/";
 }

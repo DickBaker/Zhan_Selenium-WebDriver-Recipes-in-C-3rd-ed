@@ -1,10 +1,10 @@
-namespace HelloSeleniumTest;
 using OpenQA.Selenium.Chrome;
 
+namespace SeleniumRecipesCSharp;
 [TestClass]
 public class SeleniumLoginOkTest
 {
-    IWebDriver driver = null;
+    WebDriver driver = default!;
 
     [TestMethod]
     public void TestLoginOKOnly()
@@ -14,7 +14,7 @@ public class SeleniumLoginOkTest
         driver.FindElement(By.Name("username")).SendKeys("agileway");
         driver.FindElement(By.Name("password")).SendKeys("testwise");
         driver.FindElement(By.Name("password")).Submit();
-        System.Threading.Thread.Sleep(1000);
+        Thread.Sleep(1000);
         Assert.IsTrue(driver.PageSource.Contains("Signed in!"));
         driver.Quit();
     }

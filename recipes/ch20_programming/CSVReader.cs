@@ -1,55 +1,24 @@
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
+
+namespace SeleniumRecipesCSharp.ch20_programming;
 
 public static class CSVReader
 {
-    private static bool ignoreFirstLineDefault = false;
+    const bool ignoreFirstLineDefault = false;
 
-    public static IEnumerable<IList<string>> FromFile(string fileName)
+    public static IEnumerable<List<string>> FromFile(string fileName, bool ignoreFirstLine = ignoreFirstLineDefault)
     {
-        foreach (IList<string> item in FromFile(fileName, ignoreFirstLineDefault)) yield return item;
+        using StreamReader rdr = new(fileName);
+        return FromReader(rdr, ignoreFirstLine);
     }
 
-    public static IEnumerable<IList<string>> FromFile(string fileName, bool ignoreFirstLine)
+    public static IEnumerable<List<string>> FromReader(StreamReader csv, bool ignoreFirstLine)
     {
-        using (StreamReader rdr = new StreamReader(fileName))
-        {
-            foreach (IList<string> item in FromReader(rdr, ignoreFirstLine)) yield return item;
-        }
-    }
+        if (ignoreFirstLine) { csv.ReadLine(); }
 
-    public static IEnumerable<IList<string>> FromStream(Stream csv)
-    {
-        foreach (IList<string> item in FromStream(csv, ignoreFirstLineDefault)) yield return item;
-    }
-
-    public static IEnumerable<IList<string>> FromStream(Stream csv, bool ignoreFirstLine)
-    {
-        using (var rdr = new StreamReader(csv))
-        {
-            foreach (IList<string> item in FromReader(rdr, ignoreFirstLine)) yield return item;
-        }
-    }
-
-    public static IEnumerable<IList<string>> FromReader(TextReader csv)
-    {
-        //Probably should have used TextReader instead of StreamReader
-        foreach (IList<string> item in FromReader(csv, ignoreFirstLineDefault)) yield return item;
-    }
-
-    public static IEnumerable<IList<string>> FromReader(TextReader csv, bool ignoreFirstLine)
-    {
-        if (ignoreFirstLine) csv.ReadLine();
-
-        IList<string> result = new List<string>();
-
-        StringBuilder curValue = new StringBuilder();
-        char c;
-        c = (char)csv.Read();
+        List<string> result = new();
+        StringBuilder curValue = new();
+        char c = (char)csv.Read();
         while (csv.Peek() != -1)
         {
             switch (c)
@@ -69,7 +38,9 @@ public static class CSVReader
                         {
                             c = (char)csv.Read();
                             if (c != q)
+                            {
                                 inQuotes = false;
+                            }
                         }
 
                         if (inQuotes)
@@ -80,7 +51,11 @@ public static class CSVReader
                     }
                     result.Add(curValue.ToString());
                     curValue = new StringBuilder();
-                    if (c == ',') c = (char)csv.Read(); // either ',', newline, or endofstream
+                    if (c == ',')
+                    {
+                        c = (char)csv.Read(); // either ',', newline, or endofstream
+                    }
+
                     break;
                 case '\n': //end of the record
                 case '\r':
@@ -100,15 +75,22 @@ public static class CSVReader
                     }
                     result.Add(curValue.ToString());
                     curValue = new StringBuilder();
-                    if (c == ',') c = (char)csv.Read(); //either ',', newline, or endofstream
+                    if (c == ',')
+                    {
+                        c = (char)csv.Read(); //either ',', newline, or endofstream
+                    }
+
                     break;
             }
-
         }
         if (curValue.Length > 0) //potential bug: I don't want to skip on a empty column in the last record if a caller really expects it to be there
+        {
             result.Add(curValue.ToString());
-        if (result.Count > 0)
-            yield return result;
+        }
 
+        if (result.Count > 0)
+        {
+            yield return result;
+        }
     }
 }
